@@ -1,57 +1,103 @@
-#include "MAIN.h"
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdarg.h>
+#include "main.h"
 #include <stdio.h>
 
 /**
- * _printf - trying to make printf
- * @format: format of string
- * Return: number of chars printed
+ * printTypeChecker - Checks for the characters(special) provided in the
+ * printf function
+ *
+ *  @car: Character that comes after the % symbol
+ *
+ *  @arg: Checker argument
+ *
+ *  Return: The number of characters needed
+ */
+
+int printTypeChecker(char car, va_list arg)
+{
+	int arrIndex;
+
+	TypeStruct argArr[] = {
+		{"c", ret_char},
+		{"s", ret_str},
+		{NULL, NULL}
+	};
+
+	for (arrIndex = 0; argArr[arrIndex].t != NULL; arrIndex++)
+	{
+		if (argArr[arrIndex].t[0] == car)
+		{
+			return (argArr[arrIndex].out(arg));
+		}
+	}
+
+	return (0);
+}
+
+/**
+ * printf - Our custom printf function based on C's
+ *
+ * @format : Character stream to be used
+ *
+ * Return: Characters or -1 when datatype does not exist
  */
 
 int _printf(const char *format, ...)
 {
-	int i, l_conv;
-	char *conv;
-	va_list alist;
-	buf_type buf;
+	unsigned int i;
+	int typeChecked = 0, charReturned = 0;
+	va_list arg;
+/* char *format(va_list); */
 
-	if (format == NULL)
-		return (-1);
-	_flush(buf.buffer);
-	buf.count_c = 0;
-	buf.buf_index = 0;
-	va_start(alist, format);
-	for (i = 0; format[i] != '\0';)
+	va_start(arg, format);
+
+/* if (format == NULL) */
+/* { */
+/* return (-1); */
+/* } */
+
+	for (i = 0; format[i] != '\0'; i++)
 	{
 		if (format[i] != '%')
 		{
-			fill_buffer(&buf, format + i, 1);
-			i += 1;
+			_putchar(format[i]);
+			charReturned++;
+			continue;
 		}
-		if (format[i] == '%')
+
+		if (format[i + 1] == '%')
 		{
-			conv = grab_format(format + i);
-/*grab_format grabs anything, hence is not null,
- *check if end char is legit or not
- *IMPORTANT: conv starts with %, and in some cases could be just '%'
- *in that case we do not want a conversion, as end % does not exist
- */
-			l_conv = _strlen(conv);
-			if (l_conv == 1 || no_conversion(conv[l_conv - 1]))
-			{
-				make_no_conversion(conv, &buf);
-			}
-			else
-			{
-				get_mstring_func(conv[l_conv - 1])(conv, alist, &buf);
-			}
-			free(conv);
-			i += l_conv;
+			_putchar('%');
+			charReturned++;
+			i++;
+			continue;
 		}
+
+		if (format[i + 1] == '\0')
+		{
+			return (-1);
+		}
+
+		typeChecked = printTypeChecker(format[i + 1], arg);
+		
+		if (typeChecked == -1 || typeChecked != 0)
+		{
+			i++;
+		}
+
+		if (typeChecked > 0)
+		{
+			charReturned += typeChecked;
+		}
+
+		if (typeChecked == 0)
+		{
+			_putchar('%');
+			charReturned++;
+		}
+
 	}
-	print_buffer(buf.buffer, buf.buf_index);
-	va_end(alist);
-	return (buf.count_c);
+
+	va_end(arg);
+	return (charReturned);
+
 }
