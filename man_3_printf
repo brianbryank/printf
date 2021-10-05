@@ -1,14 +1,14 @@
 .\" _printf man page /usr/share/man/man3/printf.3
 .\"
-.TH _PRINTF 3 "15-03-2021" "0.1" "Holberton _printf"
+.TH _PRINTF 3 "5-10-2021" "0.1" "ALX-Holberton _printf"
 
 .SH NAME
 _printf
 
-.B_printf - format and print data. Part of a project at Holberton School.
+.B_printf - format and print data. Part of a project at ALX- School.
 
 .SH SYNOPSIS
-Part of a project at holberton school.
+Part of a project at ALX- school.
 This project mimics the printf found in in C.
 
 _printf FORMAT [ARGUMENT]...
